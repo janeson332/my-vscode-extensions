@@ -3,6 +3,7 @@ import argparse
 import logging
 import os
 import subprocess
+from subprocess import PIPE
 import sys
 import time
 from abc import ABC, abstractmethod
@@ -107,7 +108,7 @@ class VsCodeExtensionReader(ExtensionReader):
     def get_extensions(self):
         extensions = []
 
-        proc = subprocess.run(self._cmd,capture_output=True)
+        proc = subprocess.run(self._cmd,stdout=PIPE,stderr=PIPE)
         if(proc.returncode == 0):
             entries = proc.stdout.decode().split("\n")
             for entry in entries:
