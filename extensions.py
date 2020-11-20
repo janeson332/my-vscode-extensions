@@ -223,6 +223,7 @@ if __name__ == "__main__":
     parser.add_argument("-i","--install",help="install the extension from the download dir, if not installed yet",action="store_true")
     parser.add_argument("--download-dir",help="download directory",default="./download")
     parser.add_argument("-d","--download",help="download the extensions, if not done yet",action="store_true")
+    parser.add_argument("--diff",help="if given, only not installed extensions gets downloaded",action="store_true")
     parser.add_argument("--extensions-file",help="name of file of the  marketplacelinks (used for reading and storing)",default="my-extensions.txt")
     parser.add_argument("-w","--write-extensions-file",help="writes extensionsfile of current installed extensions",action="store_true")
     
@@ -237,6 +238,10 @@ if __name__ == "__main__":
             file_extensions = FileExtensionReader(args.extensions_file).get_extensions()
             path_extensions = PathExtensionReader(args.download_dir).get_extensions()
             extensions = set(file_extensions)-set(path_extensions)
+            if(args.diff):
+                installed_ext = VsCodeExtensionReader().get_extensions()
+                extensions = set(extensions) - set(installed_ext)
+
             ExtensionDownloader(args.download_dir).download(extensions)
 
         except Exception as err:
